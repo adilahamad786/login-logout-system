@@ -14,12 +14,24 @@ export const AuthContextProvider = (props) => {
 
     const userIsLoggedIn = !!token;
 
-    const loginHandler = (token) => {
-        setToken(token);
+    const calculateRemainingTime = (expirationTime) => {
+        const currentTime = new Date().getTime();
+        const adjustedExpirtationTime = new Date(expirationTime).getTime();
+
+        const remainingDuration = adjustedExpirtationTime - currentTime;
+
+        return remainingDuration;
     }
 
     const logoutHandler = () => {
         setToken(null);
+    }
+
+    const loginHandler = (token, expirationTime) => {
+        setToken(token);
+
+        const remainingTime = calculateRemainingTime(expirationTime);
+        setTimeout(logoutHandler, remainingTime);
     }
 
     const contextValue = {
